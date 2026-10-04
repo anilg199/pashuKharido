@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # PashuMandi Backend - Enterprise Authentication & User Management
 
 [![Java](https://img.shields.io/badge/Java-17%20%7C%2019%20LTS-ED8B00?logo=openjdk&logoColor=white)](https://www.oracle.com/java/)
@@ -339,3 +340,7 @@ The server starts on port `8080`.
    - Changing a password immediately revokes all active refresh tokens, protecting against compromised devices.
 4. **Account Status Enforcement**: Accounts marked `BLOCKED`, `SUSPENDED`, or `INACTIVE` cannot authenticate or reuse tokens, returning HTTP 403 Forbidden.
 5. **CORS Hardening**: Strict origin whitelisting (`http://localhost:5173`) with explicit headers and methods. Wildcard `*` origins are rejected when credentials are enabled.
+=======
+# pashuKharido
+It is for animal market
+>>>>>>> 089f62fad7f7a8d5b22d8313ea1c29861937eec1
