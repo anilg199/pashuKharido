@@ -77,14 +77,17 @@ class AuthControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.success", is(true)))
                 .andExpect(jsonPath("$.message", is("User registered successfully")))
-                .andExpect(jsonPath("$.data.firstName", is("Anil")))
-                .andExpect(jsonPath("$.data.lastName", is("Gupta")))
-                .andExpect(jsonPath("$.data.phone", is("9876543210")))
-                .andExpect(jsonPath("$.data.email", is("anil@example.com")))
-                .andExpect(jsonPath("$.data.role", is("BUYER")))
-                .andExpect(jsonPath("$.data.status", is("ACTIVE")))
-                .andExpect(jsonPath("$.data.password").doesNotExist())
-                .andExpect(jsonPath("$.data.passwordHash").doesNotExist());
+                .andExpect(jsonPath("$.data.accessToken").isString())
+                .andExpect(jsonPath("$.data.refreshToken").isString())
+                .andExpect(jsonPath("$.data.tokenType", is("Bearer")))
+                .andExpect(jsonPath("$.data.user.firstName", is("Anil")))
+                .andExpect(jsonPath("$.data.user.lastName", is("Gupta")))
+                .andExpect(jsonPath("$.data.user.phone", is("9876543210")))
+                .andExpect(jsonPath("$.data.user.email", is("anil@example.com")))
+                .andExpect(jsonPath("$.data.user.role", is("BUYER")))
+                .andExpect(jsonPath("$.data.user.status", is("ACTIVE")))
+                .andExpect(jsonPath("$.data.user.password").doesNotExist())
+                .andExpect(jsonPath("$.data.user.passwordHash").doesNotExist());
     }
 
     @Test

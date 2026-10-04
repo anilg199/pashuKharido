@@ -38,7 +38,7 @@ public class AuthService {
     private final JwtService jwtService;
 
     @Transactional
-    public UserProfileResponse register(RegisterRequest request) {
+    public AuthResponse register(RegisterRequest request) {
         String phone = request.getPhone().trim();
         if (userRepository.existsByPhone(phone)) {
             throw new UserAlreadyExistsException("Phone number " + phone + " is already registered");
@@ -61,12 +61,22 @@ public class AuthService {
                 .district(request.getDistrict().trim())
                 .village(request.getVillage().trim())
                 .pincode(request.getPincode().trim())
+                .lastLoginAt(LocalDateTime.now())
                 .build();
 
         User savedUser = userRepository.save(user);
         log.info("New user registered successfully with ID: {} and phone: {}", savedUser.getId(), savedUser.getPhone());
 
-        return UserProfileResponse.fromEntity(savedUser);
+        String accessToken = jwtService.generateAccessToken(savedUser);
+        RefreshToken refreshToken = createRefreshToken(savedUser);
+
+        return AuthResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken.getToken())
+                .tokenType("Bearer")
+                .expiresIn(jwtService.getAccessExpirationSeconds())
+                .user(UserProfileResponse.fromEntity(savedUser))
+                .build();
     }
 
     @Transactional

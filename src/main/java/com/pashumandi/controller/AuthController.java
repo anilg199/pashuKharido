@@ -27,9 +27,9 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    @Operation(summary = "Register new user", description = "Registers a new user account with default role BUYER and status ACTIVE")
-    public ResponseEntity<ApiResponse<UserProfileResponse>> register(@Valid @RequestBody RegisterRequest request) {
-        UserProfileResponse response = authService.register(request);
+    @Operation(summary = "Register new user", description = "Registers a new user account with default role BUYER and status ACTIVE, returning access and refresh tokens")
+    public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody RegisterRequest request) {
+        AuthResponse response = authService.register(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.success("User registered successfully", response));

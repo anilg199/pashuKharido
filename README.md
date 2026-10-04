@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # PashuMandi Backend - Enterprise Authentication & User Management
 
 [![Java](https://img.shields.io/badge/Java-17%20%7C%2019%20LTS-ED8B00?logo=openjdk&logoColor=white)](https://www.oracle.com/java/)
@@ -238,18 +237,24 @@ The server starts on port `8080`.
   "success": true,
   "message": "User registered successfully",
   "data": {
-    "id": 1,
-    "firstName": "Anil",
-    "lastName": "Gupta",
-    "phone": "9876543210",
-    "email": "anil@example.com",
-    "role": "BUYER",
-    "status": "ACTIVE",
-    "state": "Uttar Pradesh",
-    "district": "Kushinagar",
-    "village": "Example Village",
-    "pincode": "274001",
-    "createdAt": "2026-10-04T20:00:00"
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI...",
+    "refreshToken": "4bbdb69e7691443796f310d15fa6dc5c...",
+    "tokenType": "Bearer",
+    "expiresIn": 900,
+    "user": {
+      "id": 1,
+      "firstName": "Anil",
+      "lastName": "Gupta",
+      "phone": "9876543210",
+      "email": "anil@example.com",
+      "role": "BUYER",
+      "status": "ACTIVE",
+      "state": "Uttar Pradesh",
+      "district": "Kushinagar",
+      "village": "Example Village",
+      "pincode": "274001",
+      "createdAt": "2026-10-04T20:00:00"
+    }
   }
 }
 ```
@@ -340,7 +345,5 @@ The server starts on port `8080`.
    - Changing a password immediately revokes all active refresh tokens, protecting against compromised devices.
 4. **Account Status Enforcement**: Accounts marked `BLOCKED`, `SUSPENDED`, or `INACTIVE` cannot authenticate or reuse tokens, returning HTTP 403 Forbidden.
 5. **CORS Hardening**: Strict origin whitelisting (`http://localhost:5173`) with explicit headers and methods. Wildcard `*` origins are rejected when credentials are enabled.
-=======
 # pashuKharido
 It is for animal market
->>>>>>> 089f62fad7f7a8d5b22d8313ea1c29861937eec1
