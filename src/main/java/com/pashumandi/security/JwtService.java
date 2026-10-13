@@ -25,6 +25,9 @@ public class JwtService {
 
     @PostConstruct
     public void init() {
+        if (jwtConfig.getSecret() == null || jwtConfig.getSecret().trim().isEmpty()) {
+            throw new IllegalStateException("JWT signing secret (jwt.secret / JWT_SECRET) is not configured! Application cannot start without a secure secret.");
+        }
         byte[] keyBytes;
         try {
             // Attempt Base64 decode first

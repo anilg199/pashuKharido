@@ -81,6 +81,12 @@ public class SecurityConfig {
                         // Protected User Profile Endpoints
                         .requestMatchers("/api/v1/users/me/**").authenticated()
 
+                        // Public Animal Image Retrieval (Service enforces published status)
+                        .requestMatchers(HttpMethod.GET, "/api/v1/animals/*/images").permitAll()
+
+                        // Animal Management Endpoints (Upload, Delete, Primary) Require Authentication
+                        .requestMatchers("/api/v1/animals/**").authenticated()
+
                         // Admin Only Endpoints (Reserved for future modules)
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
 

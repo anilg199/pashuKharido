@@ -7,6 +7,7 @@ import com.pashumandi.entity.User;
 import com.pashumandi.exception.InvalidPasswordException;
 import com.pashumandi.exception.ResourceNotFoundException;
 import com.pashumandi.exception.UserAlreadyExistsException;
+import com.pashumandi.dto.image.CloudinaryUploadResult;
 import com.pashumandi.repository.RefreshTokenRepository;
 import com.pashumandi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -26,6 +30,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ImageStorageService imageStorageService;
+    private final ImageValidationService imageValidationService;
 
     @Transactional(readOnly = true)
     public UserProfileResponse getCurrentProfile(Long userId) {
@@ -86,6 +92,78 @@ public class UserService {
         // Security best practice: invalidate existing refresh tokens to invalidate other active sessions
         refreshTokenRepository.revokeAllTokensForUser(userId);
         log.info("Password changed and active sessions revoked for user ID: {}", userId);
+    }
+
+    @Transactional
+    public UserProfileResponse uploadProfileImage(Long userId, MultipartFile file) {
+        imageValidationService.validateImage(file);
+        User user = findUserById(userId);
+        String oldPublicId = user.getProfileImagePublicId();
+
+        CloudinaryUploadResult uploadResult = imageStorageService.uploadImage(file, "pashumandi/profiles");
+
+        user.setProfileImageUrl(uploadResult.getSecureUrl());
+        user.setProfileImagePublicId(uploadResult.getPublicId());
+
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    if (StringUtils.hasText(oldPublicId)) {
+                        log.info("Post-commit: deleting old profile image with public ID: {}", oldPublicId);
+                        imageStorageService.deleteImage(oldPublicId);
+                    }
+                }
+
+                @Override
+                public void afterCompletion(int status) {
+                    if (status == STATUS_ROLLED_BACK) {
+                        log.warn("Transaction rolled back: cleaning up newly uploaded profile image: {}", uploadResult.getPublicId());
+                        imageStorageService.deleteImage(uploadResult.getPublicId());
+                    }
+                }
+            });
+        }
+
+        try {
+            User savedUser = userRepository.save(user);
+            log.info("Profile image successfully updated for user ID: {}", userId);
+            return UserProfileResponse.fromEntity(savedUser);
+        } catch (Exception ex) {
+            log.error("Failed to persist user profile image reference for user ID: {}. Cleaning up uploaded asset.", userId, ex);
+            imageStorageService.deleteImage(uploadResult.getPublicId());
+            throw ex;
+        }
+    }
+
+    @Transactional
+    public UserProfileResponse deleteProfileImage(Long userId) {
+        User user = findUserById(userId);
+        String oldPublicId = user.getProfileImagePublicId();
+
+        if (!StringUtils.hasText(user.getProfileImageUrl()) && !StringUtils.hasText(oldPublicId)) {
+            log.info("User ID: {} does not currently have a profile image to delete", userId);
+            return UserProfileResponse.fromEntity(user);
+        }
+
+        user.setProfileImageUrl(null);
+        user.setProfileImagePublicId(null);
+
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    if (StringUtils.hasText(oldPublicId)) {
+                        log.info("Post-commit: deleting profile image with public ID: {}", oldPublicId);
+                        imageStorageService.deleteImage(oldPublicId);
+                    }
+                }
+            });
+        }
+
+        User savedUser = userRepository.save(user);
+        log.info("Profile image reference cleared for user ID: {}", userId);
+        return UserProfileResponse.fromEntity(savedUser);
     }
 
     private User findUserById(Long userId) {

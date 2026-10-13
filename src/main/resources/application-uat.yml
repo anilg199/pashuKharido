@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: ${UAT_DB_URL}
+    username: ${UAT_DB_USERNAME}
+    password: ${UAT_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: PashuMandi-UAT-HikariPool
+      maximum-pool-size: 15
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+      max-lifetime: 1200000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+logging:
+  level:
+    root: INFO
+    com.pashumandi: INFO
+    org.flywaydb: INFO
+    org.hibernate.SQL: ERROR
+    org.hibernate.orm.jdbc.bind: ERROR

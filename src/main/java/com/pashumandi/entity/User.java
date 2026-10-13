@@ -10,15 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(
-    name = "users",
-    indexes = {
+@Table(name = "users", indexes = {
         @Index(name = "idx_users_phone", columnList = "phone"),
         @Index(name = "idx_users_email", columnList = "email"),
         @Index(name = "idx_users_status", columnList = "status"),
         @Index(name = "idx_users_role", columnList = "role")
-    }
-)
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -46,15 +43,20 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.VARCHAR)
     @Column(name = "role", nullable = false, length = 20)
     private UserRole role;
 
     @Enumerated(EnumType.STRING)
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.VARCHAR)
     @Column(name = "status", nullable = false, length = 20)
     private UserStatus status;
 
     @Column(name = "profile_image_url", length = 255)
     private String profileImageUrl;
+
+    @Column(name = "profile_image_public_id", length = 255)
+    private String profileImagePublicId;
 
     @Column(name = "state", nullable = false, length = 100)
     private String state;

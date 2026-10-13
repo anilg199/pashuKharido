@@ -15,9 +15,14 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+
+  flyway:
+    enabled: false
+
+cloudinary:
+  cloud-name: test-cloud
+  api-key: test-api-key
+  api-secret: test-api-secret
 
 jwt:
   secret: dGVzdF9zZWNyZXRfa2V5X2Zvcl9wYXNodW1hbmRpX2F1dGhlbnRpY2F0aW9uX3N5c3RlbV8yNTZiaXRzIQ==
@@ -27,3 +32,10 @@ jwt:
 app:
   cors:
     allowed-origins: http://localhost:5173
+  image-upload:
+    max-file-size: 5242880
+    max-files-per-animal: 10
+    allowed-content-types:
+      - image/jpeg
+      - image/png
+      - image/webp

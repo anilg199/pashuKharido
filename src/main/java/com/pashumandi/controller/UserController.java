@@ -50,4 +50,29 @@ public class UserController {
         userService.changePassword(principal.getId(), request);
         return ResponseEntity.ok(ApiResponse.messageOnly("Password changed successfully. All other sessions have been logged out."));
     }
+
+    @PostMapping(value = "/me/profile-image", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(
+            summary = "Upload or replace profile photo",
+            description = "Uploads a new profile image (JPEG, PNG, or WebP, max 5 MB) to Cloudinary and links it to the current user. Safely replaces any existing photo."
+    )
+    public ResponseEntity<ApiResponse<UserProfileResponse>> uploadProfileImage(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @RequestParam("file") org.springframework.web.multipart.MultipartFile file
+    ) {
+        UserProfileResponse response = userService.uploadProfileImage(principal.getId(), file);
+        return ResponseEntity.ok(ApiResponse.success("Profile image updated successfully", response));
+    }
+
+    @DeleteMapping("/me/profile-image")
+    @Operation(
+            summary = "Delete profile photo",
+            description = "Removes the user's current profile image from Cloudinary and clears the profile image reference in the database."
+    )
+    public ResponseEntity<ApiResponse<UserProfileResponse>> deleteProfileImage(
+            @AuthenticationPrincipal UserPrincipal principal
+    ) {
+        UserProfileResponse response = userService.deleteProfileImage(principal.getId());
+        return ResponseEntity.ok(ApiResponse.success("Profile image removed successfully", response));
+    }
 }

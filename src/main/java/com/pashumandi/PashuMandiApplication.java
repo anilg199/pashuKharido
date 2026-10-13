@@ -14,13 +14,25 @@ import java.util.List;
 @EnableJpaAuditing
 public class PashuMandiApplication {
 
+    static {
+        loadDotEnvIfPresent();
+    }
+
     public static void main(String[] args) {
         loadDotEnvIfPresent();
+        if (System.getProperty("spring.profiles.active") == null
+                && System.getenv("SPRING_PROFILES_ACTIVE") == null
+                && System.getProperty("SPRING_PROFILES_ACTIVE") == null) {
+            System.setProperty("spring.profiles.active", "dev");
+        }
         SpringApplication.run(PashuMandiApplication.class, args);
     }
 
     private static void loadDotEnvIfPresent() {
         Path envFile = Paths.get(".env");
+        if (!Files.exists(envFile)) {
+            envFile = Paths.get(System.getProperty("user.dir", "."), ".env");
+        }
         if (Files.exists(envFile)) {
             try {
                 List<String> lines = Files.readAllLines(envFile);
@@ -32,7 +44,8 @@ public class PashuMandiApplication {
                     int idx = line.indexOf('=');
                     String key = line.substring(0, idx).trim();
                     String value = line.substring(idx + 1).trim();
-                    if ((value.startsWith("\"") && value.endsWith("\"")) || (value.startsWith("'") && value.endsWith("'"))) {
+                    if ((value.startsWith("\"") && value.endsWith("\""))
+                            || (value.startsWith("'") && value.endsWith("'"))) {
                         value = value.substring(1, value.length() - 1);
                     }
                     if (System.getProperty(key) == null && System.getenv(key) == null) {
