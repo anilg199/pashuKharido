@@ -81,10 +81,18 @@ public class SecurityConfig {
                         // Protected User Profile Endpoints
                         .requestMatchers("/api/v1/users/me/**").authenticated()
 
-                        // Public Animal Image Retrieval (Service enforces published status)
+                        // Protected Seller Listings Endpoint (Must precede public GET rules)
+                        .requestMatchers(HttpMethod.GET, "/api/v1/animals/my-listings").authenticated()
+
+                        // Public Animal Browsing, Search, Nearby, Featured, Detail, and Image Retrieval
+                        .requestMatchers(HttpMethod.GET, "/api/v1/animals").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/animals/featured").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/animals/search").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/animals/nearby").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/animals/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/animals/*/images").permitAll()
 
-                        // Animal Management Endpoints (Upload, Delete, Primary) Require Authentication
+                        // All other Animal Management Endpoints (Create, Update, Deactivate, Status, Uploads) Require Authentication
                         .requestMatchers("/api/v1/animals/**").authenticated()
 
                         // Admin Only Endpoints (Reserved for future modules)
