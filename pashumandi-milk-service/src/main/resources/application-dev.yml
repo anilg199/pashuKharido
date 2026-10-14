@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: ${DEV_MILK_DB_URL:${MILK_DB_URL:${DB_URL:jdbc:mysql://localhost:3306/pashumandi_milk?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true}}}
+    username: ${DEV_DB_USERNAME:${DB_USERNAME:root}}
+    password: ${DEV_DB_PASSWORD:${DB_PASSWORD:Anil@gupta63}}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: PashuMandi-Milk-HikariPool
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+      max-lifetime: 1200000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+logging:
+  level:
+    root: INFO
+    com.pashumandi.milk: DEBUG
+    org.flywaydb: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE

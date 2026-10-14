@@ -22,9 +22,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("dev")
+@EnabledIfSystemProperty(named = "runLiveDbTests", matches = "true", disabledReason = "Requires live local MySQL database on port 3306 with dev schema")
 public class EnvironmentProfileAndSchemaValidationTest {
 
     @Autowired(required = false)

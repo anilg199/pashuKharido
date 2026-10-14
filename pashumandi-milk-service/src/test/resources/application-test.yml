@@ -1,0 +1,28 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: pashumandi-milk-service-test
+
+  datasource:
+    url: jdbc:h2:mem:milktestdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+  flyway:
+    enabled: false
+
+jwt:
+  secret: dGVzdF9zZWNyZXRfa2V5X2Zvcl9wYXNodW1hbmRpX2F1dGhlbnRpY2F0aW9uX3N5c3RlbV8yNTZiaXRzIQ==
+  access-expiration: 900000
+
+app:
+  cors:
+    allowed-origins: http://localhost:5173

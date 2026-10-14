@@ -20,6 +20,11 @@ spring:
       hibernate:
         format_sql: false
 
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:xtg7v6vt}
+  api-key: ${CLOUDINARY_API_KEY:892951972332637}
+  api-secret: ${CLOUDINARY_API_SECRET:jKG3srLtpV9pTQHPOUqgtGgcoM4}
+
 logging:
   level:
     root: INFO

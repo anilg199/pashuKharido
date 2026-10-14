@@ -35,8 +35,8 @@ spring:
 
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME:xtg7v6vt}
-  api-key: ${CLOUDINARY_API_KEY:}
-  api-secret: ${CLOUDINARY_API_SECRET:}
+  api-key: ${CLOUDINARY_API_KEY:892951972332637}
+  api-secret: ${CLOUDINARY_API_SECRET:jKG3srLtpV9pTQHPOUqgtGgcoM4}
 
 jwt:
   secret: ${JWT_SECRET:dGVzdF9zZWNyZXRfa2V5X2Zvcl9wYXNodW1hbmRpX2F1dGhlbnRpY2F0aW9uX3N5c3RlbV8yNTZiaXRzIQ==}
@@ -45,7 +45,7 @@ jwt:
 
 app:
   cors:
-    allowed-origins: ${FRONTEND_URL:http://localhost:5173}
+    allowed-origins: ${FRONTEND_URL:http://localhost:5173,http://localhost:3000,http://localhost:8081}
   image-upload:
     max-file-size: 5242880 # 5 MB in bytes
     max-files-per-animal: 10
@@ -61,3 +61,8 @@ springdoc:
     path: /swagger-ui.html
     operationsSorter: method
     tagsSorter: alpha
+    urls:
+      - name: "1. Core Platform & Livestock Service (Port 8080)"
+        url: "/v3/api-docs"
+      - name: "2. Milk Marketplace Service (Port 8081)"
+        url: "http://localhost:8081/v3/api-docs"

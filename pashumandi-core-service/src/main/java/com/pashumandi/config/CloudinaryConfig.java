@@ -21,25 +21,20 @@ public class CloudinaryConfig {
     @Bean
     @ConditionalOnMissingBean(Cloudinary.class)
     public Cloudinary cloudinary() {
-        if (!StringUtils.hasText(properties.getCloudName())) {
-            throw new IllegalStateException("Cloudinary configuration failed: 'cloudinary.cloud-name' is required. " +
-                    "Please set the CLOUDINARY_CLOUD_NAME environment variable.");
-        }
-        if (!StringUtils.hasText(properties.getApiKey())) {
-            throw new IllegalStateException("Cloudinary configuration failed: 'cloudinary.api-key' is required. " +
-                    "Please set the CLOUDINARY_API_KEY environment variable.");
-        }
-        if (!StringUtils.hasText(properties.getApiSecret())) {
-            throw new IllegalStateException("Cloudinary configuration failed: 'cloudinary.api-secret' is required. " +
-                    "Please set the CLOUDINARY_API_SECRET environment variable.");
-        }
+        String cloudName = StringUtils.hasText(properties.getCloudName()) ? properties.getCloudName().trim() : "xtg7v6vt";
+        String apiKey = StringUtils.hasText(properties.getApiKey()) ? properties.getApiKey().trim() : "unconfigured";
+        String apiSecret = StringUtils.hasText(properties.getApiSecret()) ? properties.getApiSecret().trim() : "unconfigured";
 
-        log.info("Configuring Cloudinary client for cloud-name: {}", properties.getCloudName().trim());
+        if ("unconfigured".equals(apiKey) || "unconfigured".equals(apiSecret)) {
+            log.warn("Cloudinary credentials are not fully set in environment variables. Image uploads will require CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET.");
+        } else {
+            log.info("Configuring Cloudinary client for cloud-name: {}", cloudName);
+        }
 
         Map<String, Object> config = new HashMap<>();
-        config.put("cloud_name", properties.getCloudName().trim());
-        config.put("api_key", properties.getApiKey().trim());
-        config.put("api_secret", properties.getApiSecret().trim());
+        config.put("cloud_name", cloudName);
+        config.put("api_key", apiKey);
+        config.put("api_secret", apiSecret);
         config.put("secure", true);
 
         return new Cloudinary(config);
